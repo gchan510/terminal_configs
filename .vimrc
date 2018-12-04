@@ -1,5 +1,6 @@
 " Vim-plug install command
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" Update plugins by typing :PlugInstall in vim command line
 
 " Set leader key to spacebar
 map <SPACE> <leader>
