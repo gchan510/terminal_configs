@@ -80,9 +80,8 @@ nnoremap <leader>w <C-w>v<C-w>l
 
 filetype plugin indent on
 
-set ts=4
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set encoding=utf-8
 autocmd FileType c,cpp,java,tex,txt,sml,rb,html,xml,dot,py autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
@@ -142,6 +141,7 @@ Plug 'severin-lemaignan/vim-minimap'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
+" Plug 'octol/vim-cpp-enhanced-highlight'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -208,5 +208,14 @@ let g:vimtex_compiler_latexmk = {'callback' : 0}
 " let g:syntastic_enable_balloons = 1
 
 " let g:syntastic_c_checkers = ['gcc']
+
+" vim-cpp-enhanced-highlight options
+" let g:cpp_class_scope_highlight = 0
+" let g:cpp_member_variable_highlight = 0
+" let g:cpp_class_decl_highlight = 0
+" let g:cpp_experimental_simple_template_highlight = 0
+" let g:cpp_experimental_template_highlight = 0
+" let g:cpp_concepts_highlight = 0
+" let g:cpp_no_function_highlight = 1
 
 " set statusline+=%{gutentags#statusline('[Generating...]')}
