@@ -30,8 +30,11 @@ set cursorline
 set showmode
 set showmatch
 
-set conceallevel=2
+" set conceallevel=2
 set concealcursor=vin
+
+" disable latex conceal
+let g:tex_conceal = ""
 
 set wildmenu
 set wildmode=list:longest
