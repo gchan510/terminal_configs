@@ -111,7 +111,7 @@ set undodir=~/.vim/undo//
 set undofile
 
 " Clipboard for tmux
-set clipboard^=unnamed
+" set clipboard^=unnamed
 
 call plug#begin('~/.vim/plugged')
 
@@ -146,6 +146,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
 " Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'Valloric/YouCompleteMe'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -211,7 +212,8 @@ let g:vimtex_compiler_latexmk = {'callback' : 0}
 " let g:syntastic_quiet_messages = { "type": "style" }
 " let g:syntastic_enable_balloons = 1
 
-" let g:syntastic_c_checkers = ['gcc']
+let g:syntastic_c_checkers = ['gcc']
+let g:syntastic_c_include_dirs = ['include', '../include']
 
 " vim-cpp-enhanced-highlight options
 " let g:cpp_class_scope_highlight = 0
@@ -221,5 +223,8 @@ let g:vimtex_compiler_latexmk = {'callback' : 0}
 " let g:cpp_experimental_template_highlight = 0
 " let g:cpp_concepts_highlight = 0
 " let g:cpp_no_function_highlight = 1
+
+" YouCompleteMe settings
+let g:ycm_confirm_extra_conf = 0
 
 " set statusline+=%{gutentags#statusline('[Generating...]')}
