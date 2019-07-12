@@ -29,6 +29,7 @@ set autochdir
 set cursorline
 set showmode
 set showmatch
+set nowrapscan
 
 " set conceallevel=2
 set concealcursor=vin
@@ -91,22 +92,37 @@ set encoding=utf-8
 autocmd FileType c,cpp,java,tex,txt,sml,rb,html,xml,dot,py autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
 " Don't expand tab in Makefiles
 autocmd FileType make set noexpandtab
-"
-" " Set text wrap with to 70 for compatibility with David's editor.
-" " This affects BOTH autowrap and the gq command
+
+" Set text wrap with to 70 for compatibility with David's editor.
+" This affects BOTH autowrap and the gq command
 autocmd FileType tex set textwidth=70
 autocmd FileType plaintex set textwidth=70
 autocmd FileType latex set textwidth=70
 
+" llvm IR syntax highlighting
+augroup filetype
+  au! BufRead,BufNewFile *.ll     set filetype=llvm
+augroup END
+
 " autocmd BufNewFile,BufRead *.v set syntax=verilog
 autocmd FileType verilog  setlocal shiftwidth=2 tabstop=2
 
+" Enable 256 color in terminal
 set term=screen-256color
+
+" Reopen files where I left off
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal! g'\"" | endif
+endif
 
 " Change temp files to store in ~/.vim
 set backupdir=~/.vim/backup//
 set directory=~/.vim/swap//
 set undodir=~/.vim/undo//
+
+" Clang formatting
+map <C-Y> :py3f /u/gc14/llvm-workspace/llvm/tools/clang/tools/clang-format/clang-format.py<cr>
 
 set undofile
 
@@ -120,9 +136,11 @@ Plug 'vim-scripts/ShowTrailingWhitespace'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'qpkorr/vim-bufkill'
 Plug 'morhetz/gruvbox'
+Plug 'NLKNguyen/papercolor-theme'
 Plug 'tomasr/molokai'
 Plug 'AlessandroYorba/Alduin'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'bling/vim-bufferline'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'lrvick/conque-shell'
@@ -132,7 +150,8 @@ Plug 'pgdouyon/vim-yin-yang'
 Plug 'vim-scripts/tetris.vim'
 Plug 'raimondi/delimitmate'
 " Plug 'Rip-Rip/clang_complete'
-Plug 'davidhalter/jedi'
+" Plug 'davidhalter/jedi-vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'jez/vim-better-sml'
 Plug 'lervag/vimtex'
@@ -145,8 +164,12 @@ Plug 'severin-lemaignan/vim-minimap'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'roxma/vim-tmux-clipboard'
 " Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'Valloric/YouCompleteMe'
+
+" My plugin!
+Plug '~/vim-persist'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -154,27 +177,47 @@ Plug 'junegunn/fzf.vim'
 call plug#end()
 
 set background=dark
+" colorscheme PaperColor
 let g:gruvbox_contrast_dark = 'medium'
 colorscheme gruvbox
-
-" colorscheme molokai
-" let g:molokai_original = 1
-" let g:rehash256 = 1
-
-" colorscheme alduin
-" let g:alduin_Shout_Dragon_Aspect = 1
 
 " Macros
 let @z='i/******************************************************************************/'
 
+" vim-airline stuff
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable list of buffers
 let g:airline#extensions#tabline#enabled = 1
 
 " Show filename
 let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Use version control directory as cwd
-" let g:ctrlp_working_path_mode = 'r'
+" ctrlp stuff
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ctrlp_map = '<C-p>'
+let g:ctrlp_cmd = 'CtrlPMixed'
+let g:ctrlp_working_path_mode = 'c'
+let g:ctrlp_by_filename = 1
+set wildignore+=*/tmp/*,*.so,*.swp,*.gz,*.zip,*.o
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+
+let g:ctrlp_use_caching = 1
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_cache_dir = $HOME.'/.vim/ctrlp_cache'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" ctags function names
+let g:ctags_statusline=1
+let g:ctags_title=1
 
 " Fswitch stuff
 nmap <silent> <Leader>of :FSHere<cr>
@@ -198,19 +241,6 @@ nmap <silent> <Leader>of :FSHere<cr>
 " LaTeX stuff
 let g:tex_flavor='latex'
 let g:vimtex_compiler_latexmk = {'callback' : 0}
-
-"Syntastic stuff
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:syntastic_loc_list_height = 2
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 0
-" let g:syntastic_quiet_messages = { "type": "style" }
-" let g:syntastic_enable_balloons = 1
 
 let g:syntastic_c_checkers = ['gcc']
 let g:syntastic_c_include_dirs = ['include', '../include']
