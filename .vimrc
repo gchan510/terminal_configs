@@ -85,6 +85,7 @@ nnoremap <leader>w <C-w>v<C-w>l
 
 filetype plugin indent on
 
+set scrolloff=5
 set tabstop=2
 set shiftwidth=2
 set expandtab
@@ -95,9 +96,9 @@ autocmd FileType make set noexpandtab
 
 " Set text wrap with to 70 for compatibility with David's editor.
 " This affects BOTH autowrap and the gq command
-autocmd FileType tex set textwidth=70
-autocmd FileType plaintex set textwidth=70
-autocmd FileType latex set textwidth=70
+autocmd FileType tex set textwidth=75
+autocmd FileType plaintex set textwidth=75
+autocmd FileType latex set textwidth=75
 
 " llvm IR syntax highlighting
 augroup filetype
@@ -166,7 +167,10 @@ Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'roxma/vim-tmux-clipboard'
 " Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
+Plug 'mtth/scratch.vim'
+Plug 'salsifis/vim-transpose'
+Plug 'mbbill/undotree'
 
 " My plugin!
 Plug '~/vim-persist'
@@ -183,6 +187,7 @@ colorscheme gruvbox
 
 " Macros
 let @z='i/******************************************************************************/'
+let @x=':DelimitMateSwitchi\{\textbf{XXX} \}h:DelimitMateSwitch'
 
 " vim-airline stuff
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
