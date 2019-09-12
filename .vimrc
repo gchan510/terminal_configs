@@ -125,6 +125,10 @@ set undodir=~/.vim/undo//
 " Clang formatting
 map <C-Y> :py3f /u/gc14/llvm-workspace/llvm/tools/clang/tools/clang-format/clang-format.py<cr>
 
+" Liberty source path
+set path+=/u/gc14/cpf/liberty/lib
+set path+=/u/gc14/cpf/liberty/include
+
 set undofile
 
 " Clipboard for tmux
@@ -247,8 +251,12 @@ nmap <silent> <Leader>of :FSHere<cr>
 let g:tex_flavor='latex'
 let g:vimtex_compiler_latexmk = {'callback' : 0}
 
+" ---- Syntastic stuff ----
 let g:syntastic_c_checkers = ['gcc']
-let g:syntastic_c_include_dirs = ['include', '../include']
+let g:syntastic_c_include_dirs = ['include', '../include', '../../include/']
+
+" Create this file in root directory of project
+let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
 
 " vim-cpp-enhanced-highlight options
 " let g:cpp_class_scope_highlight = 0
