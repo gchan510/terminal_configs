@@ -3,7 +3,9 @@
 ## Installing vim config
 Copy `.vimrc` to your home directory.
 To install plugins, first install the `vim-plug` plugin manager with
-`curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim`
+```
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
 
 Then in vim use `:PlugInstall` to download plugins.
 
