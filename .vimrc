@@ -131,50 +131,62 @@ set path+=/u/gc14/cpf/liberty/include
 
 set undofile
 
+" json formatter
+:command Json %!python -m json.tool
+
+" TODO Reading from specific lines of file
+" :r! sed -n 147,227p /path/to/foo/foo.c
+
 " Clipboard for tmux
 " set clipboard^=unnamed
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'vim-scripts/a.vim'
+" **** Stuff that I'm too lazy to sort ****
 Plug 'vim-scripts/ShowTrailingWhitespace'
-Plug 'derekwyatt/vim-fswitch'
-Plug 'qpkorr/vim-bufkill'
-Plug 'morhetz/gruvbox'
-Plug 'NLKNguyen/papercolor-theme'
-Plug 'tomasr/molokai'
-Plug 'AlessandroYorba/Alduin'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'bling/vim-bufferline'
-Plug 'jeetsukumaran/vim-buffergator'
 Plug 'lrvick/conque-shell'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-commentary'
-Plug 'pgdouyon/vim-yin-yang'
 Plug 'vim-scripts/tetris.vim'
 Plug 'raimondi/delimitmate'
 " Plug 'Rip-Rip/clang_complete'
 " Plug 'davidhalter/jedi-vim'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'jez/vim-better-sml'
 Plug 'lervag/vimtex'
 Plug 'petrushka/vim-opencl'
 Plug 'rsmenon/vim-mathematica'
-Plug 'tpope/vim-vinegar'
 Plug 'craigemery/vim-autotag'
 Plug 'vim-syntastic/syntastic'
 Plug 'severin-lemaignan/vim-minimap'
-Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'roxma/vim-tmux-clipboard'
 " Plug 'octol/vim-cpp-enhanced-highlight'
 " Plug 'Valloric/YouCompleteMe'
-Plug 'mtth/scratch.vim'
 Plug 'salsifis/vim-transpose'
 Plug 'mbbill/undotree'
+
+" **** Window/buffer/file search plugins ****
+Plug 'vim-scripts/a.vim'
+Plug 'qpkorr/vim-bufkill'
+Plug 'airblade/vim-gitgutter'
+Plug 'mtth/scratch.vim'
+Plug 'derekwyatt/vim-fswitch'
+Plug 'vim-airline/vim-airline'
+Plug 'bling/vim-bufferline'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'jeetsukumaran/vim-buffergator'
+Plug 'tpope/vim-vinegar'
+
+" **** Colorschemes ****
+Plug 'morhetz/gruvbox'
+Plug 'tomasr/molokai'
+Plug 'junegunn/seoul256.vim'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'AlessandroYorba/Alduin'
+Plug 'pgdouyon/vim-yin-yang'
+Plug 'vim-airline/vim-airline-themes'
 
 " My plugin!
 Plug '~/vim-persist'
@@ -185,8 +197,8 @@ Plug 'junegunn/fzf.vim'
 call plug#end()
 
 set background=dark
-" colorscheme PaperColor
 let g:gruvbox_contrast_dark = 'medium'
+let g:seoul256_background = 235
 colorscheme gruvbox
 
 " Macros
