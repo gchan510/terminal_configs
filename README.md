@@ -1,6 +1,8 @@
 # Configs for vim and tmux
 
 ## Installing vim config
+Either run `install.sh` (experimental) or manually run the commands below
+
 Copy `.vimrc` to your home directory.
 To install plugins, first install the `vim-plug` plugin manager with
 ```
