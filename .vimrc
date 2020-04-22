@@ -85,6 +85,8 @@ nnoremap <leader>w <C-w>v<C-w>l
 
 filetype plugin indent on
 
+set backspace=indent,eol,start
+
 set scrolloff=5
 set tabstop=2
 set shiftwidth=2
@@ -187,6 +189,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'AlessandroYorba/Alduin'
 Plug 'pgdouyon/vim-yin-yang'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tomasiser/vim-code-dark'
 
 " My plugin!
 Plug '~/vim-persist'
@@ -196,10 +199,11 @@ Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
-set background=dark
-let g:gruvbox_contrast_dark = 'medium'
-let g:seoul256_background = 235
-colorscheme gruvbox
+" set background=dark
+" let g:gruvbox_contrast_dark = 'medium'
+" let g:seoul256_background = 235
+" colorscheme gruvbox
+colorscheme codedark
 
 " Macros
 let @z='i/******************************************************************************/'
