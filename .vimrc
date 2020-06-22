@@ -30,6 +30,7 @@ set cursorline
 set showmode
 set showmatch
 set nowrapscan
+set updatetime=750
 
 " set conceallevel=2
 set concealcursor=vin
@@ -127,8 +128,6 @@ set undodir=~/.vim/undo//
 " Clang formatting
 map <C-Y> :py3f /u/gc14/llvm-workspace/llvm/tools/clang/tools/clang-format/clang-format.py<cr>
 
-" gqip format LaTeX!!!
-
 " Liberty source path
 set path+=/u/gc14/cpf/liberty/lib
 set path+=/u/gc14/cpf/liberty/include
@@ -147,12 +146,14 @@ set undofile
 call plug#begin('~/.vim/plugged')
 
 " **** Stuff that I'm too lazy to sort ****
+Plug 'Valloric/YouCompleteMe' " load this first since it loads python3
 Plug 'vim-scripts/ShowTrailingWhitespace'
 Plug 'lrvick/conque-shell'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-commentary'
 Plug 'vim-scripts/tetris.vim'
 Plug 'raimondi/delimitmate'
+" Plug 'Rip-Rip/clang_complete'
 " Plug 'davidhalter/jedi-vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'jez/vim-better-sml'
@@ -160,7 +161,7 @@ Plug 'lervag/vimtex'
 Plug 'petrushka/vim-opencl'
 Plug 'rsmenon/vim-mathematica'
 Plug 'craigemery/vim-autotag'
-" Plug 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 Plug 'severin-lemaignan/vim-minimap'
 Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
@@ -169,15 +170,11 @@ Plug 'roxma/vim-tmux-clipboard'
 Plug 'salsifis/vim-transpose'
 Plug 'mbbill/undotree'
 
-" **** YouCompleteMe family plugins ****
-Plug 'Valloric/YouCompleteMe'
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-
 " **** Window/buffer/file search plugins ****
 Plug 'vim-scripts/a.vim'
 Plug 'qpkorr/vim-bufkill'
 Plug 'airblade/vim-gitgutter'
-" Plug 'mtth/scratch.vim'
+Plug 'mtth/scratch.vim'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'vim-airline/vim-airline'
 Plug 'bling/vim-bufferline'
@@ -195,11 +192,8 @@ Plug 'pgdouyon/vim-yin-yang'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tomasiser/vim-code-dark'
 
-" **** Syntax/semantics-aware highlighting ****
-" Plug 'jeaye/color_coded'
-
-" **** Previewing ****
-Plug 'JamshedVesuna/vim-markdown-preview'
+" **** Build/lint checking ****
+Plug 'tpope/vim-dispatch'
 
 " My plugin!
 Plug '~/vim-persist'
@@ -247,17 +241,23 @@ let g:ctrlp_custom_ignore = {
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.vim/ctrlp_cache'
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Preview markdown shortcut
-let vim_markdown_preview_hotkey='<C-m>'
-
 " ctags function names
-" let g:ctags_statusline=1
-" let g:ctags_title=1
+let g:ctags_statusline=1
+let g:ctags_title=1
 
 " Fswitch stuff
 nmap <silent> <Leader>of :FSHere<cr>
+
+" Clang completion
+" let g:clang_library_path='/usr/lib/llvm-3.8/lib/libclang-3.8.so.1'
+" let g:clang_snippets=1
+" let g:clang_conceal_snippets=1
+" let g:clang_snippets_engine='clang_complete'
+" set completeopt=menu,menuone
+" set pumheight=20
 
 " Bufferline stuff
 " let g:bufferline_active_buffer_left = '['
@@ -273,8 +273,9 @@ let g:tex_flavor='latex'
 let g:vimtex_compiler_latexmk = {'callback' : 0}
 
 " ---- Syntastic stuff ----
-let g:syntastic_c_checkers = ['gcc']
+let g:syntastic_c_checkers = ['gcc', 'clang']
 let g:syntastic_c_include_dirs = ['include', '../include', '../../include/']
+let g:syntastic_cpp_check_header = 1
 
 " Create this file in root directory of project
 let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
@@ -288,8 +289,8 @@ let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
 " let g:cpp_concepts_highlight = 0
 " let g:cpp_no_function_highlight = 1
 
-" YouCompleteMe settings
+" ---- YouCompleteMe settings ----
 let g:ycm_confirm_extra_conf = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_clangd_binary_path = "/usr/bin/clangd"
 
 " set statusline+=%{gutentags#statusline('[Generating...]')}
