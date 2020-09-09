@@ -47,10 +47,7 @@ if [ ! "$(command -v node)" ]; then
     colorize_print MAGENTA "~/.nvm${NC}..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash &> /dev/null
 
-    # Can't source ~/.bashrc within a non-interactive script so need to do this part manually
-		NVM_DIR="$HOME/.nvm"
-		[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-		[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+    . $HOME/.nvm/nvm.sh
 
     if [ ! "$(command -v nvm)" ]; then
       colorize_print RED "Failed to install nvm... Exiting"
