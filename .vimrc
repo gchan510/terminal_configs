@@ -100,6 +100,13 @@ endif
 
 " -------- BEGIN vim-plug plugins to install ('vim-plug' 'plugged) --------
 
+" Automatically install vim-plug if it isn't installed
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 call plug#begin('~/.vim/plugged')
 
 " **** Visual enhancement plugins ****
