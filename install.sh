@@ -18,7 +18,7 @@ if [ ! -x "$(command -v node)" ]; then
   if [ "$install_node" = "y" ]; then
     echo "Installing nvm (node version manager)..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-    source ~/.bashrc
+    . ~/.bashrc
 
     if [ ! -x "$(command -v nvm)" ]; then
       echo "${RED}Failed to install npm... Exiting${NC}"
