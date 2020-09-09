@@ -3,9 +3,15 @@
 set -o nounset
 set -o errexit
 
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+MAGENTA=$(tput setaf 5)
+NC=$(tput sgr0)
+
 # if node isn't installed
 if [ ! -x "$(command -v node)" ]; then
-  echo "Node.js, which the coq.nvim plugin requres, is not installed"
+  echo "${YELLOW}Node.js, which the coc.nvim plugin requres, is not installed${NC}"
   read -p "Do you want to install the lastest version of Node.js locally now (y/n)? " install_node
 
   # install node locally
@@ -15,7 +21,7 @@ if [ ! -x "$(command -v node)" ]; then
     source ~/.bashrc
 
     if [ ! -x "$(command -v nvm)" ]; then
-      "Failed to install npm... Exiting"
+      echo "${RED}Failed to install npm... Exiting${NC}"
       exit 1
     fi
 
@@ -24,7 +30,7 @@ if [ ! -x "$(command -v node)" ]; then
     nvm install node
 
     if [ ! -x "$(command -v node)" ]; then
-      echo "Failed to install node... Exiting"
+      echo "${RED}Failed to install node... Exiting${NC}"
       exit 1
     fi
 
@@ -32,11 +38,11 @@ if [ ! -x "$(command -v node)" ]; then
 
   # don't install node and exit
   else
-    "Not installing node... Exiting"
+    "${YELLOW}Not installing node... Exiting${NC}"
     exit 0
   fi
 
-  echo "Successfully installed Node.js"
+  echo "${GREEN}Successfully installed Node.js${GREEN}"
 fi
 
 echo "Installing vim configs..."
@@ -48,6 +54,15 @@ mkdir ~/.vim/undo
 
 echo "Installing plugins..."
 vim -es -u ~/.vimrc -i NONE -c "PlugInstall" -c "qa"
+
+echo "Installing extensions for coc.nvim..."
+mkdir -p ~/.config/coc/extensions
+cp package.json ~/.config/coc/extensions
+
+# if [ ! -x "$(command -v jq)" ]; then
+#   echo "${YELLOW}JSON processor \`jq\` not found -- could not parse coc.nvim package list${NC}"
+#   echo "${YELLOW}You may need to run ${MAGENTA}:CocUpdateSync${NC} inside vim to install coc extensions"
+# fi
 
 echo "Done"
 
