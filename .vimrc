@@ -4,7 +4,7 @@
 
 " -------- BEGIN Options that work with vanilla vim ('vanilla') --------
 
-" Set leader key to spacebar
+" " Set leader key to spacebar
 map <SPACE> <leader>
 
 " **** Necessary (for me) settings ('necessary') ****
@@ -13,6 +13,7 @@ set number
 set relativenumber
 
 " Miscellaneous things that work nice
+set nocompatible
 set hidden
 set showcmd
 set ignorecase
@@ -24,6 +25,12 @@ set showmatch
 set nowrapscan
 set scrolloff=5
 set undofile
+
+set backspace=indent,eol,start
+
+" Splitting windows
+set splitbelow
+set splitright
 
 " Indenting stuff
 set tabstop=2
@@ -61,10 +68,6 @@ inoremap <C-l> <C-x><C-l>
 
 " Find tags file (not necessary with coc or YouCompleteMe)
 " set tags=./tags;/
-
-" Splitting windows
-set splitbelow
-set splitright
 
 " Enable 256 color in terminal (doesn't always work when screen-256color isn't
 " installed)
@@ -105,7 +108,7 @@ Plug 'vim-scripts/ShowTrailingWhitespace'
 " Show indentation levels
 Plug 'Yggdroot/indentLine'
 " Show the undotree
-Plug 'mbbill/undotree'
+ Plug 'mbbill/undotree'
 " Diff specific lines in a file
 Plug 'AndrewRadev/linediff.vim'
 " Show git diff in gutter
