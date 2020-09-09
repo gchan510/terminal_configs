@@ -46,6 +46,7 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 " Wrapped line movement
 nnoremap j gj
 nnoremap k gk
+nnoremap gt :YcmCompleter GoTo<cr>
 
 " Autocomplete line
 inoremap <C-l> <C-x><C-l>
@@ -64,13 +65,6 @@ nmap <leader>bq :bp <BAR> bd #<CR>
 
 " Show all open buffers and their status
 nmap <leader>bl :ls<CR>
-
-" Window navigation
-" nnoremap <C-j> <C-w><C-j>
-" nnoremap <C-k> <C-w><C-k>
-" nnoremap <C-h> <C-w><C-h>
-" nnoremap <C-l> <C-w><C-l>
-" nnoremap <C-.> 5<C-w><S-.>
 
 " Jump to tag fix
 nmap <C-]> g<C-]>
@@ -144,38 +138,36 @@ set undofile
 
 call plug#begin('~/.vim/plugged')
 
+" **** YouCompleteMe family plugins ****
+Plug 'ycm-core/YouCompleteMe' " load this first for python3
+
 " **** Stuff that I'm too lazy to sort ****
 Plug 'vim-scripts/ShowTrailingWhitespace'
 Plug 'lrvick/conque-shell'
-" Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-commentary'
 Plug 'vim-scripts/tetris.vim'
 Plug 'raimondi/delimitmate'
-" Plug 'davidhalter/jedi-vim'
-Plug 'nathanaelkane/vim-indent-guides'
+Plug 'Yggdroot/indentLine'
 Plug 'jez/vim-better-sml'
 Plug 'lervag/vimtex'
 Plug 'petrushka/vim-opencl'
 Plug 'rsmenon/vim-mathematica'
 Plug 'craigemery/vim-autotag'
-" Plug 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 Plug 'severin-lemaignan/vim-minimap'
-Plug 'tpope/vim-obsession'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'roxma/vim-tmux-clipboard'
-" Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'salsifis/vim-transpose'
 Plug 'mbbill/undotree'
+Plug 'AndrewRadev/linediff.vim'
 
-" **** YouCompleteMe family plugins ****
-Plug 'Valloric/YouCompleteMe'
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" **** Handling git ****
+Plug 'tpope/vim-fugitive'
 
 " **** Window/buffer/file search plugins ****
 Plug 'vim-scripts/a.vim'
 Plug 'qpkorr/vim-bufkill'
 Plug 'airblade/vim-gitgutter'
-" Plug 'mtth/scratch.vim'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'vim-airline/vim-airline'
 Plug 'bling/vim-bufferline'
@@ -191,15 +183,22 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'AlessandroYorba/Alduin'
 Plug 'pgdouyon/vim-yin-yang'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tomasiser/vim-code-dark'
 
 " **** Syntax/semantics-aware highlighting ****
-" Plug 'jeaye/color_coded'
 
 " **** Previewing ****
 Plug 'JamshedVesuna/vim-markdown-preview'
 
-" My plugin!
+" **** My plugin! ****
 Plug '~/vim-persist'
+
+" **** Plugins not currently used but might be cool
+" Plug 'jeaye/color_coded'
+" Plug 'mtth/scratch.vim'
+" Plug 'octol/vim-cpp-enhanced-highlight'
+" Plug 'davidhalter/jedi-vim'
+" Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -207,16 +206,22 @@ Plug 'junegunn/fzf.vim'
 call plug#end()
 
 set background=dark
-let g:gruvbox_contrast_dark = 'medium'
-let g:seoul256_background = 235
-colorscheme gruvbox
+" let g:gruvbox_contrast_dark = 'high'
+" let g:seoul256_background = 235
+" colorscheme gruvbox
+colorscheme codedark
 
 " Macros
 let @z='i/******************************************************************************/'
 let @x=':DelimitMateSwitchi\{\textbf{XXX} \}h:DelimitMateSwitch'
 
+" indentLine stuff
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
 " vim-airline stuff
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:airline_theme = 'codedark'
+
 " Enable list of buffers
 let g:airline#extensions#tabline#enabled = 1
 
@@ -269,13 +274,14 @@ let g:tex_flavor='latex'
 let g:vimtex_compiler_latexmk = {'callback' : 0}
 
 " ---- Syntastic stuff ----
-let g:syntastic_c_checkers = ['gcc']
+let g:syntastic_c_checkers = ['gcc', 'clang']
 let g:syntastic_c_include_dirs = ['include', '../include', '../../include/']
+let g:syntastic_cpp_check_header = 1
 
 " Create this file in root directory of project
-let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
+" let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
 
-" vim-cpp-enhanced-highlight options
+" ---- vim-cpp-enhanced-highlight options ----
 " let g:cpp_class_scope_highlight = 0
 " let g:cpp_member_variable_highlight = 0
 " let g:cpp_class_decl_highlight = 0
@@ -284,8 +290,10 @@ let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
 " let g:cpp_concepts_highlight = 0
 " let g:cpp_no_function_highlight = 1
 
-" YouCompleteMe settings
+" ---- YouCompleteMe settings ----
 let g:ycm_confirm_extra_conf = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_clangd_uses_ycmd_caching = 0
+" let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_clangd_binary_path = "/u/gc14/.local/bin/clangd"
 
 " set statusline+=%{gutentags#statusline('[Generating...]')}
