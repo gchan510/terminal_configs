@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -o nounset
-set -o errexit
+shopt errexit
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -21,7 +20,7 @@ if [ ! -x "$(command -v node)" ]; then
     . ~/.bashrc
 
     if [ ! -x "$(command -v nvm)" ]; then
-      echo "${RED}Failed to install npm... Exiting${NC}"
+      echo "${RED}Failed to install nvm... Exiting${NC}"
       exit 1
     fi
 
