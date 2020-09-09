@@ -1,6 +1,8 @@
 #!/bin/bash
 
-shopt errexit
+set -o errexit
+
+SCRIPT_PATH=`dirname "$0"`
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -8,48 +10,83 @@ YELLOW=$(tput setaf 3)
 MAGENTA=$(tput setaf 5)
 NC=$(tput sgr0)
 
+function colorize_print {
+  local color text
+  if [ "$#" -eq 1 ]; then
+    color=NC
+  fi
+  color="$1"
+  text="$2"
+  case "$color" in
+    RED)
+      echo "${RED}${text}${NC}"
+      ;;
+    GREEN)
+      echo "${GREEN}${text}${NC}"
+      ;;
+    YELLOW)
+      echo "${YELLOW}${text}${NC}"
+      ;;
+    MAGENTA)
+      echo "${MAGENTA}${text}${NC}"
+      ;;
+    *)
+      echo "${NC}${text}${NC}"
+      ;;
+  esac
+}
+
 # if node isn't installed
-if [ ! -x "$(command -v node)" ]; then
-  echo "${YELLOW}Node.js, which the coc.nvim plugin requres, is not installed${NC}"
+if [ ! "$(command -v node)" ]; then
+  colorize_print YELLOW "Node.js, which the coc.nvim plugin requires, is not installed"
   read -p "Do you want to install the lastest version of Node.js locally now (y/n)? " install_node
 
   # install node locally
   if [ "$install_node" = "y" ]; then
-    echo "Installing nvm (node version manager)..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-    . ~/.bashrc
+    printf "Installing nvm (node version manager) in "
+    colorize_print MAGENTA "~/.nvm${NC}..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash &> /dev/null
 
-    if [ ! -x "$(command -v nvm)" ]; then
-      echo "${RED}Failed to install nvm... Exiting${NC}"
+    # Can't source ~/.bashrc within a non-interactive script so need to do this part manually
+		NVM_DIR="$HOME/.nvm"
+		[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+		[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+    if [ ! "$(command -v nvm)" ]; then
+      colorize_print RED "Failed to install nvm... Exiting"
       exit 1
     fi
 
-    echo "Done"
+    colorize_print GREEN "Done"
     echo "Installing Node.js"
     nvm install node
 
-    if [ ! -x "$(command -v node)" ]; then
-      echo "${RED}Failed to install node... Exiting${NC}"
+    if [ ! "$(command -v node)" ]; then
+      colorize_print RED "Failed to install node... Exiting"
       exit 1
     fi
 
-    echo "Done"
+    colorize_print GREEN "Done"
 
   # don't install node and exit
   else
-    echo "${YELLOW}Not installing node... Exiting${NC}"
+    colorize_print YELLOW "Not installing node... Exiting"
     exit 0
   fi
 
-  echo "${GREEN}Successfully installed Node.js${GREEN}"
+  colorize_print GREEN "Successfully installed Node.js"
 fi
 
 echo "Installing vim configs..."
+if [ -f ~/.vimrc ]; then
+  colorize_print YELLOW "Detected an existing .vimrc file -- making a backup ~/.vimrc.backup"
+  mv ~/.vimrc ~/.vimrc.backup
+fi
 cp .vimrc ~/.vimrc
 
-mkdir ~/.vim/swap
-mkdir ~/.vim/backup
-mkdir ~/.vim/undo
+mkdir -p ~/.vim/swap
+mkdir -p ~/.vim/backup
+mkdir -p ~/.vim/undo
 
 echo "Installing plugins..."
 vim -es -u ~/.vimrc -i NONE -c "PlugInstall" -c "qa"
@@ -63,11 +100,24 @@ cp package.json ~/.config/coc/extensions
 #   echo "${YELLOW}You may need to run ${MAGENTA}:CocUpdateSync${NC} inside vim to install coc extensions"
 # fi
 
-echo "Done"
+colorize_print GREEN "Done"
 
-if [ -x "$(command -v tmux)" ]; then
-  cp .tmux.conf ~/.tmux.conf
-  cp .tmux.conf.local ~/.tmux.conf.local
-else
-  echo "Tmux not detected... not tmux configs"
+if [ ! "$(command -v tmux)" ]; then
+  colorize_print YELLOW "Tmux not detected... not installing tmux configs"
+  return 0
 fi
+
+echo "Installing tmux configs..."
+if [ -f ~/.tmux.conf ]; then
+  colorize_print YELLOW "Detected an existing .tmux.conf file -- making a backup ~/.tmux.conf.backup"
+  mv ~/.tmux.conf ~/.tmux.conf.backup
+fi
+if [ -f ~/.tmux.conf.local ]; then
+  colorize_print YELLOW "Detected an existing .tmux.conf.local file -- making a backup ~/.tmux.conf.local.backup"
+  mv ~/.tmux.conf.local ~/.tmux.conf.local.backup
+fi
+
+cp .tmux.conf ~/.tmux.conf
+cp .tmux.conf.local ~/.tmux.conf.local
+
+colorize_print GREEN "Done"
