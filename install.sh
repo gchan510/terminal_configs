@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -o nounset
 set -o errexit
 
 RED=$(tput setaf 1)
@@ -38,7 +37,7 @@ if [ ! -x "$(command -v node)" ]; then
 
   # don't install node and exit
   else
-    "${YELLOW}Not installing node... Exiting${NC}"
+    echo "${YELLOW}Not installing node... Exiting${NC}"
     exit 0
   fi
 
