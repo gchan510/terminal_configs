@@ -15,7 +15,7 @@ if [ ! -x "$(command -v node)" ]; then
   read -p "Do you want to install the lastest version of Node.js locally now (y/n)? " install_node
 
   # install node locally
-  if [ "$install_node" -eq "y" ]; then
+  if [ "$install_node" = "y" ]; then
     echo "Installing nvm (node version manager)..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
     source ~/.bashrc
