@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -o errexit
+# set -o errexit
 
-SCRIPT_PATH=`dirname "$0"`
+SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -91,15 +91,18 @@ mkdir -p ~/.vim/undo
 
 echo "Installing plugins..."
 vim -es -u ~/.vimrc -i NONE -c "PlugInstall" -c "qa"
+colorize_print GREEN "Done"
 
 echo "Installing extensions for coc.nvim..."
+coc_extensions='coc-clangd coc-cmake coc-fzf-preview coc-json coc-python coc-sh coc-todolist'
 mkdir -p ~/.config/coc/extensions
-cp package.json ~/.config/coc/extensions
-
-# if [ ! -x "$(command -v jq)" ]; then
-#   echo "${YELLOW}JSON processor \`jq\` not found -- could not parse coc.nvim package list${NC}"
-#   echo "${YELLOW}You may need to run ${MAGENTA}:CocUpdateSync${NC} inside vim to install coc extensions"
-# fi
+cd ~/.config/coc/extensions
+if [ ! -f package.json ]
+then
+    echo '{"dependencies":{}}'> package.json
+fi
+npm install ${coc_extensions} --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+cd ${SCRIPT_PATH}
 
 colorize_print GREEN "Done"
 
@@ -122,3 +125,4 @@ cp .tmux.conf ~/.tmux.conf
 cp .tmux.conf.local ~/.tmux.conf.local
 
 colorize_print GREEN "Done"
+colorize_print YELLOW "Source your .bashrc to enable Node.js (required by coc.nvim)"

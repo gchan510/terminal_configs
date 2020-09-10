@@ -1,1 +1,3 @@
 Detect vim version and features and change plugins based on that
+
+Detect tmux version
