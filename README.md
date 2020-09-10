@@ -10,4 +10,6 @@ deprecated
 deprecated
 
 ## Requirements
-Node.js (can be automatically installed by running `install.sh`)
+`curl`
+`git`
+`Node.js` (can be automatically installed by running `install.sh`)
