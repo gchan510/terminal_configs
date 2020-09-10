@@ -79,6 +79,10 @@ if [ -f ~/.vimrc ]; then
   colorize_print YELLOW "Detected an existing .vimrc file -- making a backup ~/.vimrc.backup"
   mv ~/.vimrc ~/.vimrc.backup
 fi
+if [ -d ~/.vim ]; then
+  colorize_print YELLOW "Detected an existing .vim directory -- making a backup ~/.vim_backup"
+  mv ~/.vim ~/.vim_backup
+fi
 cp .vimrc ~/.vimrc
 
 mkdir -p ~/.vim/swap
