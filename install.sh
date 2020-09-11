@@ -88,6 +88,7 @@ cp .vimrc ~/.vimrc
 mkdir -p ~/.vim/swap
 mkdir -p ~/.vim/backup
 mkdir -p ~/.vim/undo
+cp llvm.vim ~/.vim/syntax
 
 echo "Installing plugins..."
 vim -es -u ~/.vimrc -i NONE -c "PlugInstall" -c "qa"
