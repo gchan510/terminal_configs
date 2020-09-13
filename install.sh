@@ -74,6 +74,13 @@ if [ ! "$(command -v node)" ]; then
   colorize_print GREEN "Successfully installed Node.js"
 fi
 
+if [ ! -d $HOME/.fzf ]; then
+  colorize_print YELLOW "fzf not detected on system -- installing now..."
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+  colorize_print GREEN "Done"
+fi
+
 echo "Installing vim configs..."
 if [ -f ~/.vimrc ]; then
   colorize_print YELLOW "Detected an existing .vimrc file -- making a backup ~/.vimrc.backup"
@@ -92,6 +99,8 @@ cp llvm.vim ~/.vim/syntax
 
 echo "Installing plugins..."
 vim -es -u ~/.vimrc -i NONE -c "PlugInstall" -c "qa"
+vim -es -u ~/.vimrc -i NONE -c "PlugUpgrade" -c "qa"
+vim -es -u ~/.vimrc -i NONE -c "PlugUpdate" -c "qa"
 colorize_print GREEN "Done"
 
 echo "Installing extensions for coc.nvim..."
