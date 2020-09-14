@@ -1,6 +1,25 @@
 #!/bin/bash
 
-# set -o errexit
+TEMP=`getopt -o h --long help,extra-features -n 'install.sh' -- "$@"`
+eval set -- "${TEMP}"
+
+function print_help {
+  printf "Usage: clean.sh [-h|--help] [--extra-features]\n"
+  printf "\t-h|--help\t\tPrint out this help message\n"
+  printf "\t---extra-features\tInstall some experimental extra features\n"
+}
+
+INSTALL_EXTRA=false
+while true; do
+  case "$1" in
+    -h | --help )
+      print_help; exit 0 ;;
+    --extra-features )
+      INSTALL_EXTRA=true ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
 
 SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 

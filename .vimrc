@@ -57,7 +57,7 @@ set wildmenu
 set wildmode=list:longest
 
 " Edit .vimrc
-nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<CR>
 
 " Wrapped line movement
 nnoremap j gj
@@ -148,6 +148,7 @@ Plug 'tpope/vim-fugitive'
 
 " **** fzf ****
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
 " **** Colorschemes ****
 Plug 'morhetz/gruvbox'
@@ -198,6 +199,9 @@ let g:ctrlp_custom_ignore = {
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.vim/ctrlp_cache'
+
+" **** coc.nvim ****
+let g:coc_global_extensions = ['coc-clangd', 'coc-cmake', 'coc-fzf-preview', 'coc-json', 'coc-python', 'coc-sh', 'coc-todolist']
 
 " -------- END Options related to vim plugins ('plugins') --------
 

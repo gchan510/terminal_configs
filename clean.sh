@@ -4,7 +4,7 @@ TEMP=`getopt -o hb --long help,backup -n 'clean.sh' -- "$@"`
 eval set -- "${TEMP}"
 
 function print_help {
-  printf "Usage: clean.sh [-h|--help] [--backup]"
+  printf "Usage: clean.sh [-h|--help] [--backup]\n"
   printf "\t-h|--help\tPrint out this help message\n"
   printf "\t-b|--backup\tBackup directories to be deleted\n"
 }
