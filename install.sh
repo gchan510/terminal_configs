@@ -87,7 +87,7 @@ if [ ! "$(command -v node)" ]; then
   # don't install node and exit
   else
     colorize_print YELLOW "Not installing node... Exiting"
-    exit 0
+    exit 1
   fi
 
   colorize_print GREEN "Successfully installed Node.js"
@@ -137,7 +137,7 @@ colorize_print GREEN "Done"
 
 if [ ! "$(command -v tmux)" ]; then
   colorize_print YELLOW "Tmux not detected... not installing tmux configs"
-  return 0
+  exit 1
 fi
 
 echo "Installing tmux configs..."
@@ -155,3 +155,11 @@ cp .tmux.conf.local ~/.tmux.conf.local
 
 colorize_print GREEN "Done"
 colorize_print YELLOW "Source your .bashrc to enable Node.js (required by coc.nvim)"
+
+# Install bash stuff
+retval=$(./get_exe.sh)
+
+if [ ! "$?" ]; then
+  colorize_print RED "${retval}"
+  exit 1
+fi
