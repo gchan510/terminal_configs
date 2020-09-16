@@ -155,7 +155,7 @@ Plug 'tpope/vim-fugitive'
 
 " **** fzf ****
 Plug 'junegunn/fzf.vim'
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'yuki-ycino/fzf-preview.vim'
 
 " **** Colorschemes ****
 Plug 'morhetz/gruvbox'

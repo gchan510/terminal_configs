@@ -93,6 +93,7 @@ if [ ! "$(command -v node)" ]; then
   colorize_print GREEN "Successfully installed Node.js"
 fi
 
+# install fzf
 if [ ! -d $HOME/.fzf ]; then
   colorize_print YELLOW "fzf not detected on system -- installing now..."
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -123,15 +124,16 @@ vim -es -u ~/.vimrc -i NONE -c "PlugUpdate" -c "qa"
 colorize_print GREEN "Done"
 
 echo "Installing extensions for coc.nvim..."
-coc_extensions='coc-clangd coc-cmake coc-fzf-preview coc-json coc-python coc-sh coc-todolist'
-mkdir -p ~/.config/coc/extensions
-cd ~/.config/coc/extensions
-if [ ! -f package.json ]
-then
-    echo '{"dependencies":{}}'> package.json
-fi
-npm install ${coc_extensions} --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
-cd ${SCRIPT_PATH}
+vim -es -u ~/.vimrc -i NONE -c "qa"
+# coc_extensions='coc-clangd coc-cmake coc-fzf-preview coc-json coc-python coc-sh coc-todolist'
+# mkdir -p ~/.config/coc/extensions
+# cd ~/.config/coc/extensions
+# if [ ! -f package.json ]
+# then
+#     echo '{"dependencies":{}}'> package.json
+# fi
+# npm install ${coc_extensions} --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
+# cd ${SCRIPT_PATH}
 
 colorize_print GREEN "Done"
 
