@@ -80,23 +80,6 @@ command! -nargs=1 Silent
 " Shortuct for previewing markdown files
 nnoremap <C-m> :Silent view_md %<CR>
 
-" **** Example coc.nvim config **** 
-" Increase size of command window
-set cmdheight=2
-" Make things update faster
-set updatetime=300
-" Don't pass messages to |ins-completion-menu|
-set shortmess+=c
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
@@ -253,6 +236,23 @@ let g:ctrlp_cache_dir = $HOME.'/.vim/ctrlp_cache'
 
 " **** coc.nvim ****
 let g:coc_global_extensions = ['coc-clangd', 'coc-cmake', 'coc-fzf-preview', 'coc-json', 'coc-python', 'coc-sh', 'coc-todolist']
+
+" Increase size of command window
+set cmdheight=2
+" Make things update faster
+set updatetime=300
+" Don't pass messages to |ins-completion-menu|
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  " XXX Maybe change this to 'yes' if it's annoying
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
 
 " -------- END Options related to vim plugins ('plugins') --------
 
