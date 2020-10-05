@@ -1,3 +1,4 @@
+# : << EOF
 # https://github.com/gpakosz/.tmux
 # (‑●‑●)> dual licensed under the WTFPL v2 license and the MIT license,
 #         without any warranty.
@@ -150,10 +151,10 @@ tmux_conf_theme_left_separator_main=''
 tmux_conf_theme_left_separator_sub='|'
 tmux_conf_theme_right_separator_main=''
 tmux_conf_theme_right_separator_sub='|'
-#tmux_conf_theme_left_separator_main=''  # /!\ you don't need to install Powerline
-#tmux_conf_theme_left_separator_sub=''   #   you only need fonts patched with
-#tmux_conf_theme_right_separator_main='' #   Powerline symbols or the standalone
-#tmux_conf_theme_right_separator_sub=''  #   PowerlineSymbols.otf font
+#tmux_conf_theme_left_separator_main='\uE0B0'  # /!\ you don't need to install Powerline
+#tmux_conf_theme_left_separator_sub='\uE0B1'   #   you only need fonts patched with
+#tmux_conf_theme_right_separator_main='\uE0B2' #   Powerline symbols or the standalone
+#tmux_conf_theme_right_separator_sub='\uE0B3'  #   PowerlineSymbols.otf font, see README.md
 
 # status left/right content:
 #   - separate main sections with '|'
@@ -172,13 +173,14 @@ tmux_conf_theme_right_separator_sub='|'
 #     - #{prefix}
 #     - #{root}
 #     - #{synchronized}
-#     - #{uptime_d}
+#     - #{uptime_y}
+#     - #{uptime_d} (modulo 365 when #{uptime_y} is used)
 #     - #{uptime_h}
 #     - #{uptime_m}
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
-tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
+tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
 tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
 
 # status left style
@@ -250,11 +252,11 @@ tmux_conf_battery_vbar_palette='gradient'
 # symbols used to indicate whether battery is charging or discharging
 tmux_conf_battery_status_charging='↑'       # U+2191
 tmux_conf_battery_status_discharging='↓'    # U+2193
-#tmux_conf_battery_status_charging='⚡ '    # U+26A1
-#tmux_conf_battery_status_charging='🔌 '    # U+1F50C
-#tmux_conf_battery_status_discharging='🔋 ' # U+1F50B
+#tmux_conf_battery_status_charging='🔌'     # U+1F50C
+#tmux_conf_battery_status_discharging='🔋'  # U+1F50B
 
-# clock style
+# clock style (when you hit <prefix> + t)
+# you may want to use %I:%M %p in place of %R in tmux_conf_theme_status_right
 tmux_conf_theme_clock_colour='#00afff'  # light blue
 tmux_conf_theme_clock_style='24'
 
@@ -296,16 +298,37 @@ bind C-a send-prefix
 # Clearing screen with C-l with vim-tmux-navigator
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
+# is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
+#     | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+# # is_vim="isvim2 '#{pane_tty}'"
+# bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h'  'select-pane -L'
+# bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j'  'select-pane -D'
+# bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k'  'select-pane -U'
+# bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l'  'select-pane -R'
+# tmux_version='$(tmux -V | sed -En "s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p")'
+# if-shell -b '[ "$(echo "$tmux_version < 3.0" | bc)" = 1 ]' \
+#     "bind-key -n 'C-\\' if-shell \"$is_vim\" 'send-keys C-\\'  'select-pane -l'"
+# if-shell -b '[ "$(echo "$tmux_version >= 3.0" | bc)" = 1 ]' \
+#     "bind-key -n 'C-\\' if-shell \"$is_vim\" 'send-keys C-\\\\'  'select-pane -l'"
+
+# bind-key -T copy-mode-vi 'C-h' select-pane -L
+# bind-key -T copy-mode-vi 'C-j' select-pane -D
+# bind-key -T copy-mode-vi 'C-k' select-pane -U
+# bind-key -T copy-mode-vi 'C-l' select-pane -R
+# bind-key -T copy-mode-vi 'C-\' select-pane -l
+
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
     | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 bind-key -n C-h if-shell "$is_vim" "send-keys C-h"  "select-pane -L"
 bind-key -n C-j if-shell "$is_vim" "send-keys C-j"  "select-pane -D"
 bind-key -n C-k if-shell "$is_vim" "send-keys C-k"  "select-pane -U"
 bind-key -n C-l if-shell "$is_vim" "send-keys C-l"  "select-pane -R"
+# bind-key -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
 bind-key -T copy-mode-vi C-h select-pane -L
 bind-key -T copy-mode-vi C-j select-pane -D
 bind-key -T copy-mode-vi C-k select-pane -U
 bind-key -T copy-mode-vi C-l select-pane -R
+# bind-key -T copy-mode-vi C-\ select-pane -l
 bind C-l send-keys 'C-l'
 
 # Save vim sessions in tmux-resurrect
@@ -324,3 +347,27 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run -b '~/.tmux/plugins/tpm/tpm'
+
+# -- custom variables ----------------------------------------------------------
+# to define a custom #{foo} variable, define a POSIX shell function between the
+# '# EOF' and the '# "$@"' lines. Please note that the opening brace { character
+# must be on the same line as the function name otherwise the parse won't detect
+# it.
+#
+# then, use #{foo} in e.g. the 'tmux_conf_theme_status_left' or the
+# 'tmux_conf_theme_status_right' variables.
+
+# # /!\ do not remove the following line
+# EOF
+#
+# weather() {
+#   curl -m 1 wttr.in?format=3 2>/dev/null
+#   sleep 900 # sleep for 15 minutes, throttle network requests whatever the value of status-interval
+# }
+#
+# online() {
+#   ping -t 1 -c 1 1.1.1.1 >/dev/null 2>&1 && printf '✔' || printf '✘'
+# }
+#
+# "$@"
+# # /!\ do not remove the previous line
