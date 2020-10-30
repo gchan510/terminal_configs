@@ -25,6 +25,7 @@ set showmatch
 set nowrapscan
 set scrolloff=5
 set undofile
+set maxmempattern=2000000
 
 set backspace=indent,eol,start
 
@@ -51,6 +52,8 @@ set undodir=~/.vim/undo//
 set autochdir
 set cursorline
 set concealcursor=n
+filetype plugin on
+syntax on
 
 " Popup window for auto-completion (check if this screws with any plugins)
 set wildmenu
@@ -60,8 +63,8 @@ set wildmode=list:longest
 nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<CR>
 
 " Wrapped line movement
-nnoremap j gj
-nnoremap k gk
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " Autocomplete line
 inoremap <C-l> <C-x><C-l>
@@ -70,7 +73,7 @@ inoremap <C-l> <C-x><C-l>
 " set tags=./tags;/
 
 " Enable 256 color in terminal (doesn't always work when screen-256color isn't installed)
-set term=screen-256color
+" set term=screen-256color
 
 command! -nargs=1 Silent
 \   execute 'silent !clear -x'
@@ -78,7 +81,7 @@ command! -nargs=1 Silent
 \ | execute 'redraw!'
 
 " Shortcut for previewing markdown files
-nnoremap <C-m> :Silent view_md %<CR>
+" nnoremap <C-m> :Silent mdless %<CR>
 
 " **** autocmds section ('autocmd') ****
 " Don't expand tab in Makefiles
@@ -102,6 +105,9 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
     \| exe "normal! g'\"" | endif
 endif
+
+" Profile shortcut
+nnoremap <C-x> :profile start /home/greg/.vim/profile.log<CR><bar>:profile file *<CR><bar>:profile func *<CR>
 
 " -------- END Options that work with vanilla vim ('vanilla') --------
 
@@ -129,6 +135,10 @@ Plug 'AndrewRadev/linediff.vim'
 Plug 'airblade/vim-gitgutter'
 " Dank status bar
 Plug 'vim-airline/vim-airline'
+" Better vimdiff view
+Plug 'rickhowe/diffchar.vim'
+" Show vim keybindings
+Plug 'liuchengxu/vim-which-key'
 
 " **** Shortcut plugins ****
 " Better netrw
@@ -138,7 +148,7 @@ Plug 'tpope/vim-commentary'
 " Automatic closing of brackets, quotes, etc.
 Plug 'raimondi/delimitmate'
 " Seamlessly switch between vim windows and tmux panes
-Plug 'christoomey/vim-tmux-navigator'
+ Plug 'christoomey/vim-tmux-navigator'
 " Close buffer without closing window
 Plug 'qpkorr/vim-bufkill'
 " Navigating buffers
@@ -146,16 +156,27 @@ Plug 'jeetsukumaran/vim-buffergator'
 " Fuzzy file/buffer finder
 Plug 'ctrlpvim/ctrlp.vim'
 
-" **** Linter
+" **** Latex ****
+Plug 'lervag/vimtex'
+
+" **** LSP client and more! ****
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 " **** Git ****
 " enough said
 Plug 'tpope/vim-fugitive'
 
+" **** vimwiki ****
+Plug 'vimwiki/vimwiki'
+
 " **** fzf ****
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'yuki-ycino/fzf-preview.vim'
+
+" **** taskwarrior ****
+Plug 'blindFS/vim-taskwarrior'
+Plug 'tools-life/taskwiki'
 
 " **** Colorschemes ****
 Plug 'morhetz/gruvbox'
@@ -176,9 +197,13 @@ call plug#end()
 set background=dark
 colorscheme codedark
 
+" **** buffergator ****
+let g:buffergator_suppress_keymaps = 1
+
 " **** indentLine ****
 " set character list for indents
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+let g:indentLine_fileTypeExclude = ['tex']
 
 " **** vim-airline ****
 " set theme
@@ -190,31 +215,33 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 " Enable coc integration
 let g:airline#extensions#coc#enabled = 1
-let airline#extensions#coc#error_symbol = 'E:'
-let airline#extensions#coc#warning_symbol = 'W:'
-let airline#extensions#coc#stl_format_err = '%E{[%e(#%fe)]}'
-let airline#extensions#coc#stl_format_warn = '%W{[%w(#%fw)]}'
+" let g:airline#extensions#coc#error_symbol = 'E:'
+" let g:airline#extensions#coc#warning_symbol = 'W:'
+" let g:airline#extensions#coc#stl_format_err = '%E{[%e(#%fe)]}'
+" let g:airline#extensions#coc#stl_format_warn = '%W{[%w(#%fw)]}'
+let g:airline_extensions = [ 'tabline' ]
+let g:airline_powerline_fonts = 1
 
 " **** ctrlp ****
 let g:ctrlp_map = '<C-p>'
 let g:ctrlp_cmd = 'CtrlPMixed'
-let g:ctrlp_working_path_mode = 'c'
+let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_by_filename = 1
 set wildignore+=*/tmp/*,*.so,*.swp,*.gz,*.zip,*.o
 
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ 'link': 'some_bad_symbolic_links',
+  \ 'file': '\v\.(exe|so|dll|bc|o)\.*\d*$',
   \ }
 
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_cache_dir = $HOME.'/.vim/ctrlp_cache'
+let g:ctrlp_cache_dir = '~/.vim/ctrlp_cache'
+" let g:ctrlp_user_command = 'find %s -type f'
 
 " **** coc.nvim ****
-let g:coc_global_extensions = ['coc-clangd', 'coc-cmake', 'coc-fzf-preview', 'coc-json', 'coc-python', 'coc-sh', 'coc-todolist']
+let g:coc_global_extensions = ['coc-clangd', 'coc-cmake', 'coc-json', 'coc-python', 'coc-vimtex']
 
 " Increase size of command window
 set cmdheight=2
@@ -257,6 +284,101 @@ endif
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocActionAsync('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of language server.
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Mappings for CoCList
+execute "set <M-a>=\ea"
+execute "set <M-c>=\ec"
+execute "set <M-o>=\eo"
+execute "set <M-s>=\es"
+" Show all diagnostics.
+nnoremap <silent><nowait> <M-a>  :<C-u>CocList diagnostics<cr>
+" Show commands.
+nnoremap <silent><nowait> <M-c>  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <M-o>  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <M-s>  :<C-u>CocList -I symbols<cr>
+
+" **** vimtex ****
+let g:tex_flavor = 'latex'
+let g:vimtex_view_general_viewer = 'zathura'
+
+" **** vimwiki ****
+let wiki = {}
+let wiki.path = '~/.mywiki'
+let g:vimwiki_list = [{'path': '~/.mywiki/', 'path_html': '~/.mywiki_html'}]
+let wiki.nested_syntaxes = {'c++': 'cpp'}
 
 " -------- END Options related to vim plugins ('plugins') --------
 
