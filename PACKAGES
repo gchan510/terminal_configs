@@ -1,0 +1,7 @@
+# Packages to install
+# Y means install, N means don't install
+# XXX Change at your own risk! Some things won't work correctly
+#     if some packages aren't installed. Working combinations TBD
+
+taskwarrior Y
+timewarrior Y
