@@ -27,5 +27,5 @@ CFLAGS=$(python3-config --includes) ./configure --with-features=huge \
             --enable-luainterp=yes \
             --prefix=$HOME/.local
 
-make VIMRUNTIMEDIR=$HOME/.local/share/vim/vim82
+make VIMRUNTIMEDIR=$HOME/.local/share/vim/vim82 -j
 make install
