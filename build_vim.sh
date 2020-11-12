@@ -17,6 +17,7 @@ fi
 git clone https://github.com/vim/vim.git
 
 # Build and install vim
+cd vim
 ./configure --with-features=huge \
             --enable-multibyte \
             --enable-rubyinterp=yes \
