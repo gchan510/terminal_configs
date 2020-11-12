@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DISTRO=$(awk -F= '/^ID/{print $2}' /etc/os-release)
+DISTRO=$(awk -F= '/^ID=/{print $2}' /etc/os-release)
 
 # Install prereqs
 if [[ "$DISTRO" == "ubuntu" ]]; then
