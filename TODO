@@ -1,4 +1,6 @@
 Detect vim version and features and change plugins based on that
 
-Install taskwarrior and timewarrior, and their configs
+Update install.sh
+  Install taskwarrior and timewarrior, and their configs
   Change install script to check everything and read options before running anything
+  Install powerline-fonts
