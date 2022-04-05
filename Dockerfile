@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 RUN apt-get update --fix-missing
-RUN apt-get install -y git vim
+RUN apt-get install -y git vim curl tmux
 
 # Create user and set working directory
 RUN useradd --create-home --shell /bin/bash term_user
