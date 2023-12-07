@@ -181,7 +181,7 @@ tmux_conf_theme_right_separator_sub='|'
 #     - #{username}
 #     - #{username_ssh}
 tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
-tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} #(curl -m 1 wttr.in/Princeton?format=4 2>/dev/null; sleep 300) , load: #{loadavg} , %R , %d %b | #{username}#{root} | #{hostname} '
+tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
 
 # status left style
 tmux_conf_theme_status_left_fg='#000000,#e4e4e4,#e4e4e4'  # black, white , white
@@ -298,9 +298,6 @@ bind C-a send-prefix
 # Clearing screen with C-l with vim-tmux-navigator
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
-not_tmux='echo "#{pane_current_command}" | grep -iqE "(^|\/)g?(view|n?vim?x?)(diff)?$" \
-    || echo "#{pane_start_command}" | grep -iqE "fzf" \
-    || echo "#{pane_current_command}" | grep -iqE "fzf"'
 # is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
 #     | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 # # is_vim="isvim2 '#{pane_tty}'"
@@ -327,7 +324,6 @@ bind-key -n C-j if-shell "$is_vim" "send-keys C-j"  "select-pane -D"
 bind-key -n C-k if-shell "$is_vim" "send-keys C-k"  "select-pane -U"
 bind-key -n C-l if-shell "$is_vim" "send-keys C-l"  "select-pane -R"
 # bind-key -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
-
 bind-key -T copy-mode-vi C-h select-pane -L
 bind-key -T copy-mode-vi C-j select-pane -D
 bind-key -T copy-mode-vi C-k select-pane -U
@@ -335,14 +331,13 @@ bind-key -T copy-mode-vi C-l select-pane -R
 # bind-key -T copy-mode-vi C-\ select-pane -l
 bind C-l send-keys 'C-l'
 
-# Save vim sessions in tmux-resurrect
-# set -g @resurrect-strategy-vim 'session'
-
 # Tmux Plugin Manager
-# set -g @plugin 'tmux-plugins/tpm'
-# set -g @plugin 'tmux-plugins/tmux-resurrect'
-# set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-yank'
 # set -g @plugin 'christoomey/vim-tmux-navigator'
+
+# Save vim sessions in tmux-resurrect
+set -g @resurrect-strategy-vim 'session'
 
 # Other examples:
 # set -g @plugin 'github_username/plugin_name'
@@ -372,7 +367,3 @@ bind C-l send-keys 'C-l'
 #
 # "$@"
 # # /!\ do not remove the previous line
-
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run -b '~/.tmux/plugins/tpm/tpm'
-

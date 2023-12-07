@@ -35,6 +35,7 @@ set splitright
 
 " Indenting stuff
 set tabstop=2
+set softtabstop=2
 set shiftwidth=2
 set expandtab
 
@@ -52,8 +53,12 @@ set undodir=~/.vim/undo//
 set autochdir
 set cursorline
 set concealcursor=n
+" set foldmethod=syntax
+" set foldlevelstart=99
+" set foldcolumn=4
 filetype plugin on
 syntax on
+let g:python_recommended_style = 0
 
 " Popup window for auto-completion (check if this screws with any plugins)
 set wildmenu
@@ -79,9 +84,6 @@ command! -nargs=1 Silent
 \   execute 'silent !clear -x'
 \ | execute 'silent !' . <q-args>
 \ | execute 'redraw!'
-
-" Shortcut for previewing markdown files
-" nnoremap <C-m> :Silent mdless %<CR>
 
 " **** autocmds section ('autocmd') ****
 " Don't expand tab in Makefiles
@@ -126,25 +128,27 @@ call plug#begin('~/.vim/plugged')
 " Show trailing whitespace
 Plug 'vim-scripts/ShowTrailingWhitespace'
 " Show indentation levels
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 " Show the undotree
  Plug 'mbbill/undotree'
-" Diff specific lines in a file
-Plug 'AndrewRadev/linediff.vim'
 " Show git diff in gutter
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 " Dank status bar
 Plug 'vim-airline/vim-airline'
 " Better vimdiff view
-Plug 'rickhowe/diffchar.vim'
+" Plug 'rickhowe/diffchar.vim'
 " Show vim keybindings
 Plug 'liuchengxu/vim-which-key'
+" Show marks and custom signs on the left
+Plug 'kshenoy/vim-signature'
 
 " **** Shortcut plugins ****
 " Better netrw
 Plug 'tpope/vim-vinegar'
 " Comment and uncomment blocks of code
 Plug 'tpope/vim-commentary'
+" Unix commands as vim commands
+Plug 'tpope/vim-eunuch'
 " Automatic closing of brackets, quotes, etc.
 Plug 'raimondi/delimitmate'
 " Seamlessly switch between vim windows and tmux panes
@@ -154,10 +158,19 @@ Plug 'qpkorr/vim-bufkill'
 " Navigating buffers
 Plug 'jeetsukumaran/vim-buffergator'
 " Fuzzy file/buffer finder
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
+
+" **** HTML & CSS tools ****
+Plug 'mattn/emmet-vim'
+
+" **** OpenSCAD syntax ****
+Plug 'sirtaj/vim-openscad'
+
+" **** Better python folding ****
+" Plug 'tmhedberg/SimpylFold'
 
 " **** Latex ****
-Plug 'lervag/vimtex'
+" Plug 'lervag/vimtex'
 
 " **** LSP client and more! ****
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -166,6 +179,9 @@ Plug 'jackguo380/vim-lsp-cxx-highlight'
 " **** Git ****
 " enough said
 Plug 'tpope/vim-fugitive'
+
+" **** Save vim session ****
+Plug 'tpope/vim-obsession'
 
 " **** vimwiki ****
 Plug 'vimwiki/vimwiki'
@@ -205,6 +221,10 @@ let g:buffergator_suppress_keymaps = 1
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 let g:indentLine_fileTypeExclude = ['tex']
 
+" **** vim-fugitive ****
+nmap <leader>gl :diffget //3<CR>
+nmap <leader>gh :diffget //2<CR>
+
 " **** vim-airline ****
 " set theme
 let g:airline_theme = 'codedark'
@@ -223,25 +243,24 @@ let g:airline_extensions = [ 'tabline' ]
 let g:airline_powerline_fonts = 1
 
 " **** ctrlp ****
-let g:ctrlp_map = '<C-p>'
-let g:ctrlp_cmd = 'CtrlPMixed'
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_by_filename = 1
-set wildignore+=*/tmp/*,*.so,*.swp,*.gz,*.zip,*.o
+" let g:ctrlp_map = '<C-p>'
+" let g:ctrlp_cmd = 'CtrlPMixed'
+" let g:ctrlp_working_path_mode = 'ra'
+" let g:ctrlp_by_filename = 1
+" set wildignore+=*/tmp/*,*.so,*.swp,*.gz,*.zip,*.o
 
-" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll|bc|o)\.*\d*$',
-  \ }
+" " let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+"   \ 'file': '\v\.(exe|so|dll|bc|o)\.*\d*$',
+"   \ }
 
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_cache_dir = '~/.vim/ctrlp_cache'
-" let g:ctrlp_user_command = 'find %s -type f'
+" let g:ctrlp_use_caching = 1
+" let g:ctrlp_clear_cache_on_exit = 0
+" let g:ctrlp_cache_dir = '~/.vim/ctrlp_cache'
 
 " **** coc.nvim ****
-let g:coc_global_extensions = ['coc-clangd', 'coc-cmake', 'coc-json', 'coc-python', 'coc-vimtex']
+let g:coc_global_extensions = ['coc-clangd', 'coc-cmake', 'coc-json', 'coc-jedi', 'coc-vimtex']
 
 " Increase size of command window
 set cmdheight=2
@@ -379,6 +398,9 @@ let wiki = {}
 let wiki.path = '~/.mywiki'
 let g:vimwiki_list = [{'path': '~/.mywiki/', 'path_html': '~/.mywiki_html'}]
 let wiki.nested_syntaxes = {'c++': 'cpp'}
+
+" **** restore_view.vim ****
+" set viewoptions=cursor,folds
 
 " -------- END Options related to vim plugins ('plugins') --------
 
